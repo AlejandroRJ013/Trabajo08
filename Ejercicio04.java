@@ -10,8 +10,6 @@ public class Ejercicio04 {
         // Crear un arrayList que contenga todos los obejtoArticulos
         // Crear un objeto para (Articulo, precio, stock)
 
-        //
-
         HashMap<String, Integer> productoStock = new HashMap<>();
         productoStock.put("Leche", 100);
         productoStock.put("Pan", 150);
@@ -235,7 +233,6 @@ public class Ejercicio04 {
     public static void panelCrearTicket(ArrayList<String> arrayProductos, HashMap<String, Integer> productoStock,
             HashMap<String, Double> productoPrecio, DecimalFormat dosDecimales) {
         StringBuilder texto = new StringBuilder("PRECIO DE LOS ARTICULOS\n");
-        articulosApp articulos = new articulosApp();
         String producto = "";
         int cantidad = 0;
         int stockFinal = 0;
@@ -293,8 +290,6 @@ public class Ejercicio04 {
             productoStock.put(producto, stockFinal);
 
             precioIVA = precioArticuloConIva(productoPrecio, precioIVA, articuloEsencial, producto);
-
-            articulos.setTodos(producto, cantidad, precioIVA);
 
             totalProducto = precioIVA * cantidad;
             String ivaFormateado = dosDecimales.format(totalProducto);
