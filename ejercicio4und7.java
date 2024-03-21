@@ -2,8 +2,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import javax.swing.Spring;
-
 public class ejercicio4und7 {
 
 	public static void main(String[] args) {
@@ -119,6 +117,7 @@ public class ejercicio4und7 {
 			}
 			System.out.println(sumaCompra);
 		}
+		sc.close();
 
 	}
 
