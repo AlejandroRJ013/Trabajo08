@@ -242,6 +242,7 @@ public class Ejercicio04 {
         boolean masArticulos = false;
         boolean articuloEsencial = false;
         boolean error = false;
+        int confirmado = 0;
         do {
             JPanel infoArticulos = new JPanel(new GridLayout(0, 2));
 
@@ -253,7 +254,7 @@ public class Ejercicio04 {
             JTextField cantidadTxt = new JTextField(10);
             infoArticulos.add(cantidadTxt);
 
-            infoArticulos.add(new JLabel("¿Más artículos?"));
+            infoArticulos.add(new JLabel("¿Último artículos?"));
             JCheckBox masArticulosCheck = new JCheckBox();
             infoArticulos.add(masArticulosCheck);
 
@@ -262,7 +263,7 @@ public class Ejercicio04 {
             infoArticulos.add(articuloEsencialCheck);
 
             do {
-                JOptionPane.showMessageDialog(null, infoArticulos, "Titulo", JOptionPane.PLAIN_MESSAGE);
+                confirmado = JOptionPane.showConfirmDialog(null, infoArticulos, "Titulo", JOptionPane.OK_CANCEL_OPTION);
 
                 masArticulos = masArticulosCheck.isSelected() ? true : false;
                 articuloEsencial = articuloEsencialCheck.isSelected() ? true : false;
@@ -286,6 +287,10 @@ public class Ejercicio04 {
                 }
             } while (error);
 
+            if (confirmado == JOptionPane.CANCEL_OPTION) {
+                break;
+            }
+
             // objeto.reStock(articulo, nuevoStock) (crear el metodo)
             productoStock.put(producto, stockFinal);
 
@@ -307,7 +312,7 @@ public class Ejercicio04 {
             }
 
             arrayProductos.remove(producto);
-        } while (masArticulos);
+        } while (!masArticulos);
         
         ticket(dosDecimales, texto, totalCompra);
     }

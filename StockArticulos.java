@@ -1,5 +1,3 @@
-package TA7;
-
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +86,7 @@ public class StockArticulos {
     
     public static StockArticulos buscarArticulo(String nombre) {
         for (StockArticulos producto : inventario) {
-            if (producto.nombre.equalsIgnoreCase(nombre)) {
+            if (producto.nombre.contains(nombre)) {
                 return producto;
             }
         }
@@ -216,6 +214,9 @@ public class StockArticulos {
                 case "5":
                     continuar = false; // Salir del bucle
                     break;
+                case "6":
+                String F = JOptionPane.showInputDialog(null, "ingresa", "keta", JOptionPane.QUESTION_MESSAGE);
+                buscarArticulo(F);                    break;
                 default:
                     JOptionPane.showMessageDialog(null,
                     		"Opción no válida", "Error", JOptionPane.ERROR_MESSAGE);
