@@ -55,6 +55,52 @@ public class StockArticulosPrueba {
                 '}';
     }
 
+
+    public static void comprarArticulo(HashMap<String, Integer> cesta) {
+        JPanel panelComprar = new JPanel(new GridLayout(0, 2));
+
+        panelComprar.add(new JLabel("Nombre del producto: "));
+        JComboBox<String> seleccionable = crearSeleccionable(inventario);
+        panelComprar.add(seleccionable);
+
+        panelComprar.add(new JLabel("Cantidad:"));
+        JTextField cantidadTxt = new JTextField(10);
+        panelComprar.add(cantidadTxt);
+
+        int confirmacion = JOptionPane.showConfirmDialog(null, panelComprar, "Cesta Lidl", JOptionPane.OK_CANCEL_OPTION);
+        
+        if (confirmacion == JOptionPane.CANCEL_OPTION || confirmacion == JOptionPane.CLOSED_OPTION) {
+            JOptionPane.showMessageDialog(null, "Operación cancelada", "Error 404", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String producto = (String) seleccionable.getSelectedItem();
+            if (producto != null && !producto.equals("- Seleccionar producto -")) {
+                Policias poliCantidad = new Policias(cantidadTxt, "enteros");
+                if (poliCantidad.getBoolean()) {
+                    int cantidad = Integer.parseInt(cantidadTxt.getText());
+                    cesta.put(producto, cantidad);
+                } else {
+                    JOptionPane.showMessageDialog(null, "La cantidad debe ser un número entero válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Por favor, seleccione un producto válido.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public static JComboBox<String> crearSeleccionable(ArrayList<StockArticulosPrueba> inventario) {
+        String[] productos = new String[(inventario.size() + 1)];
+        productos[0] = "- Seleccionar producto -";
+
+        for (int i = 0; i < StockArticulosPrueba.inventario.size(); i++) {
+            StockArticulosPrueba articulo = StockArticulosPrueba.inventario.get(i);
+            String producto = articulo.getNombre();
+            productos[(i+1)] = producto;
+        }
+        JComboBox<String> seleccionable = new JComboBox<>(productos);
+
+        return seleccionable;
+    }
+
     public static void agregarArticulo() {
         JPanel infoArticulos = new JPanel(new GridLayout(0, 2));
 
@@ -103,21 +149,21 @@ public class StockArticulosPrueba {
 
                         if (inventario.size() >= 10) {
                             JOptionPane.showMessageDialog(null, "¡El inventario contiene 10 o más productos!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
-                        }
-
-                        if (!poliProducto.getBoolean() || !poliPrecio.getBoolean() || !poliCantidad.getBoolean()) {
-                            JOptionPane.showMessageDialog(null, "El artículo no se ha podido agregar", "Mensaje", JOptionPane.ERROR_MESSAGE);
                         } else {
-                            JOptionPane.showMessageDialog(null, "¡Artículo agregado correctamente!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
-                        }
+                            if (!poliProducto.getBoolean() || !poliPrecio.getBoolean() || !poliCantidad.getBoolean()) {
+                                JOptionPane.showMessageDialog(null, "El artículo no se ha podido agregar", "Mensaje", JOptionPane.ERROR_MESSAGE);
+                            } else {
+                                System.out.println(producto);
+                                System.out.println(precio);
+                                System.out.println(cantidad);
+                                System.out.println(esencial);
+                                System.out.println(articulos.toString()+"\n");
+                                for (int i = 0; i < inventario.size(); i++) {
+                                    System.out.println(inventario.get(i));
+                                }
 
-                        System.out.println(producto);
-                        System.out.println(precio);
-                        System.out.println(cantidad);
-                        System.out.println(esencial);
-                        System.out.println(articulos.toString()+"\n");
-                        for (int i = 0; i < inventario.size(); i++) {
-                            System.out.println(inventario.get(i));
+                                JOptionPane.showMessageDialog(null, "¡Artículo agregado correctamente!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                            }
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Cantidad del producto debe ser un número entero y superior a 0.", "Error 404", JOptionPane.ERROR_MESSAGE);

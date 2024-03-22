@@ -1,7 +1,9 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.RescaleOp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -114,6 +116,7 @@ public class mainPrueba {
         modificarBoton(lupa);
 
         accionesAnadir(frame, anadir, productos, productosTXT);
+        accionesComprar(frame, comprar, productos, productosTXT);
 
         botones.add(comprar);
         botones.add(anadir);
@@ -139,54 +142,111 @@ public class mainPrueba {
         comprar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                //EMPIEZAN LAS ACCIONES DEL BOTON
-                arrayProductos.removeAll(arrayProductos);
+                HashMap<String, Integer> cesta = new HashMap<>();
+                int qty = 0;
 
-                for (int i = 0; i < StockArticulosPrueba.inventario.size(); i++) {
-                    StockArticulosPrueba articulo = StockArticulosPrueba.inventario.get(i);
-                        if (i <= 20) {
-                            String producto = articulo.getNombre();
-                            double precio = articulo.getPrecio();
-                            String precioFormateado = dosDecimales.format(precio);
-                            int stock = articulo.getCantidad();
-                        }
+                UIManager.put("OptionPane.yesButtonText", "Uno");
+                UIManager.put("OptionPane.noButtonText", "Varios");
+
+
+                int respuesta = JOptionPane.showConfirmDialog(null, "¿Cuantos artículos desea comprar?", "Cesta Lidl", JOptionPane.YES_NO_CANCEL_OPTION);
+
+                if (respuesta == JOptionPane.CANCEL_OPTION || respuesta == JOptionPane.CLOSED_OPTION) {
+                    JOptionPane.showMessageDialog(null, "Operación cancelada", "Error 404", JOptionPane.ERROR_MESSAGE);
+                } else if (respuesta == JOptionPane.YES_OPTION) {
+                    StockArticulosPrueba.comprarArticulo(cesta);
+                    System.out.println(cesta);
+
+                } else if (respuesta == JOptionPane.NO_OPTION) {
+                    int i = 1;
+                    qty = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese la cantidad de artículos a comprar", "Comprar varios artículos", JOptionPane.QUESTION_MESSAGE));
+                    while (i <= qty) {
+                    StockArticulosPrueba.comprarArticulo(cesta);
+                    System.out.println(cesta);
+                    i++;
                     }
+                }
 
-                    for (int i = 0; i < StockArticulosPrueba.inventario.size(); i++) {
-                        // objeto.getStock
-                        inventario.getNombre().add(producto);
-                    }
+                // panelCrearTicket(arrayProductos, dosDecimales);
 
-                JPanel infoArticulos = new JPanel(new GridLayout(0, 2));
-
-                infoArticulos.add(new JLabel("Nombre del producto: "));
-                JComboBox<String> seleccionable = crearSeleccionable(StockArticulosPrueba.inventario.get(0));
-                infoArticulos.add(seleccionable);
-
-                infoArticulos.add(new JLabel("Cantidad:"));
-                JTextField cantidadTxt = new JTextField(10);
-                infoArticulos.add(cantidadTxt);
-
-                
-                panelCrearTicket(arrayProductos, productoStock, productoPrecio, dosDecimales);
-
-                actualizarProductos(frame, productoStock, productoPrecio, productos, productosTXT);
+                // actualizarProductos(frame, productos, productosTXT);
             }
         });
     }
 
-    public static JComboBox<String> crearSeleccionable(ArrayList<String> arrayProductos) {
-        String[] productos = new String[(arrayProductos.size() + 1)];
-        productos[0] = "- Seleccionar producto -";
-        int i = 1;
-        for (String producto : arrayProductos) {
-            productos[i] = producto;
-            i++;
-        }
-        JComboBox<String> seleccionable = new JComboBox<>(productos);
+    // public static void panelCrearTicket(ArrayList<String> arrayProductos, DecimalFormat dosDecimales) {
+    //     StringBuilder texto = new StringBuilder("PRECIO DE LOS ARTICULOS\n");
+    //     String producto = "";
+    //     int cantidad = 0;
+    //     int stockFinal = 0;
+    //     double precioIVA = 0.0;
+    //     double totalCompra = 0.0;
+    //     double totalProducto = 0.0;
+    //     boolean masArticulos = false;
+    //     boolean articuloEsencial = false;
+    //     boolean error = false;
+    //     int confirmado = 0;
+    //     do {
+    //         producto = policiaProducto(seleccionable, producto);
+    //         if (producto.equals("- Seleccionar producto -")) {
+    //             error = true;
+    //         } else {
+    //             cantidad = policiaCantidad(cantidadTxt, cantidad);
+    //             if (cantidad == 0) {
+    //                 error = true;
+    //             } else {
+    //                 int stockProducto = productoStock.get(producto);
+    //                 stockFinal = revisorCantidades(productoStock, stockProducto, stockFinal, cantidad, producto);
+    //                 if (stockFinal == 0) {
+    //                     error = true;
+    //                 } else {
+    //                     error = false;
+    //                 }
+    //             }
+    //         }
+    //     } while (error);
 
-        return seleccionable;
+    //         if (confirmado == JOptionPane.CANCEL_OPTION) {
+    //             break;
+    //         }
+
+    //         // objeto.reStock(articulo, nuevoStock) (crear el metodo)
+    //         productoStock.put(producto, stockFinal);
+
+    //         precioIVA = precioArticuloConIva(productoPrecio, precioIVA, articuloEsencial, producto);
+
+    //         totalProducto = precioIVA * cantidad;
+    //         String ivaFormateado = dosDecimales.format(totalProducto);
+    //         String totalFormateado = dosDecimales.format(totalProducto);
+    //         texto.append("Producto: '" + producto + "'\n    Precio/unidad: <" + ivaFormateado
+    //                 + "> / <" + cantidad + ">\n    Precio total: <" + totalFormateado + ">\n\n");
+
+    //         totalCompra += totalProducto;
+
+    //         if (arrayProductos.size() < 2) {
+    //             masArticulos = false;
+    //             JOptionPane.showMessageDialog(null, "No hay mas artículos para poder comprar, finalice la compra",
+    //                     "Artículos máximos", JOptionPane.INFORMATION_MESSAGE);
+    //             break;
+    //         }
+
+    //         arrayProductos.remove(producto);
+    //     } while (!masArticulos);
+        
+    //     ticket(dosDecimales, texto, totalCompra);
+    // }
+
+    public static void ticket(DecimalFormat dosDecimales, StringBuilder texto, double totalCompra) {
+        String laMulta = dosDecimales.format(totalCompra);
+        double losBilletes = Double
+                .parseDouble(JOptionPane.showInputDialog(null, texto.toString() + "\nTotal a pagar: " + laMulta));
+        double cambio = losBilletes - totalCompra;
+        String laCalderilla = dosDecimales.format(cambio);
+        JOptionPane.showMessageDialog(null,
+                "Has pagado el precio de " + laMulta + " con " + losBilletes + "\nTus vueltas son ==> " + laCalderilla);
     }
+
+    
 
     public static void accionesAnadir(JFrame frame, JButton anadir, JPanel productos, StringBuilder productosTXT) {
         anadir.addActionListener(new ActionListener() {
