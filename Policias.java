@@ -42,7 +42,7 @@ public class Policias {
     }
 
     public static boolean policiaProducto(JTextField productoTxt) {
-        if (productoTxt.getText().matches("[a-zA-Z ]+")) {
+        if (productoTxt.getText().matches("[a-zA-Z0-9 ]+")) {
             return true;
         } else {
             return false;
@@ -50,6 +50,7 @@ public class Policias {
     }
 
     public static boolean policiaPrecio(JTextField precioTxt) {
+        //Intentar que solo pueda meter dos decimales
         if (precioTxt.getText().matches("[0-9]+(\\.[0-9]+)?")) {
             if (Double.parseDouble(precioTxt.getText()) == 0) {
                 return false;

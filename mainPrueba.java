@@ -1,17 +1,35 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+
 import javax.swing.*;
 import javax.swing.border.*;
 
 public class mainPrueba {
     public static void main(String[] args) {
-        StockArticulosPrueba articulos = new StockArticulosPrueba();
+        StockArticulosPrueba leche = new StockArticulosPrueba("LECHE", 1.10, true, 20);
+            StockArticulosPrueba.inventario.add(leche);
+        StockArticulosPrueba pan = new StockArticulosPrueba("PAN", 0.90, true, 30);
+            StockArticulosPrueba.inventario.add(pan);
+        StockArticulosPrueba huevos = new StockArticulosPrueba("HUEVOS", 2.50, true, 40);
+            StockArticulosPrueba.inventario.add(huevos);
+        StockArticulosPrueba arroz = new StockArticulosPrueba("ARROZ", 1.30, false, 15);
+            StockArticulosPrueba.inventario.add(arroz);
+        StockArticulosPrueba pasta = new StockArticulosPrueba("PASTA", 1.25, false, 25);
+            StockArticulosPrueba.inventario.add(pasta);
+        StockArticulosPrueba tomates = new StockArticulosPrueba("TOMATES", 2.35, false, 35);
+            StockArticulosPrueba.inventario.add(tomates);
+        StockArticulosPrueba patatas = new StockArticulosPrueba("PATATAS", 2.10, false, 10);
+            StockArticulosPrueba.inventario.add(patatas);
+        StockArticulosPrueba manzanas = new StockArticulosPrueba("MANZANAS", 1.75, false, 45);
+            StockArticulosPrueba.inventario.add(manzanas);
 
-        ventana(articulos);
+
+        ventana();
     }
 
-    public static void ventana(StockArticulosPrueba articulos) {
+    public static void ventana() {
         StringBuilder productosTXT = new StringBuilder("");
         JFrame frame = new JFrame("Almacen LIDL");
         frame.setSize(1000, 1000);
@@ -29,7 +47,7 @@ public class mainPrueba {
         JPanel productos = new JPanel();
 
         panelTitulo(tituloLIDL);
-        panelBotones(articulos, frame, botones, productos, productosTXT);
+        panelBotones(frame, botones, productos, productosTXT);
         panelProductos(productos, productosTXT);
 
         posicion.gridy = 0;
@@ -71,7 +89,7 @@ public class mainPrueba {
             int stock = articulo.getCantidad();
 
             JLabel labelProductos = new JLabel(
-                    "Artículo " + i + " >  " + producto + ": " + precioFormateado + "€ / " + stock
+                    "Artículo " + (i+1) + " >  " + producto + ": " + precioFormateado + "€ / " + stock
                             + " unidades en stock");
             labelProductos.setForeground(Color.BLACK);
             productosTXT.append(
@@ -82,11 +100,11 @@ public class mainPrueba {
         }
     }
 
-    public static void panelBotones(StockArticulosPrueba articulos, JFrame frame, JPanel botones, JPanel productos, StringBuilder productosTXT) {
+    public static void panelBotones(JFrame frame, JPanel botones, JPanel productos, StringBuilder productosTXT) {
         botones.setLayout(new GridLayout(0, 4));
         botones.setBackground(Color.GRAY);
 
-        JButton anadir = new JButton(escalarImagen("Iconos\\cart-plus.png"));
+        JButton anadir = new JButton(escalarImagen("Iconos\\stock.png"));
         modificarBoton(anadir);
         JButton comprar = new JButton(escalarImagen("Iconos\\cart-check.png"));
         modificarBoton(comprar);
@@ -95,7 +113,7 @@ public class mainPrueba {
         JButton lupa = new JButton(escalarImagen("Iconos\\search.png"));
         modificarBoton(lupa);
 
-        accionesAnadir(articulos, frame, anadir, productos, productosTXT);
+        accionesAnadir(frame, anadir, productos, productosTXT);
 
         botones.add(comprar);
         botones.add(anadir);
@@ -111,21 +129,94 @@ public class mainPrueba {
 
     public static ImageIcon escalarImagen(String ruta) {
         ImageIcon imagen = new ImageIcon(ruta);
-        ImageIcon imagenEscalada = new ImageIcon(imagen.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
+        ImageIcon imagenEscalada = new ImageIcon(imagen.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
         return imagenEscalada;
     }
 
-    public static void accionesAnadir(StockArticulosPrueba articulos, JFrame frame, JButton anadir, JPanel productos, StringBuilder productosTXT) {
+    public static void accionesComprar(JFrame frame, JButton comprar, JPanel productos, StringBuilder productosTXT) {
+        DecimalFormat dosDecimales = new DecimalFormat("0.00");
+        ArrayList<String> arrayProductos = new ArrayList<>();
+        comprar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                //EMPIEZAN LAS ACCIONES DEL BOTON
+                arrayProductos.removeAll(arrayProductos);
+
+                for (int i = 0; i < StockArticulosPrueba.inventario.size(); i++) {
+                    StockArticulosPrueba articulo = StockArticulosPrueba.inventario.get(i);
+                        if (i <= 20) {
+                            String producto = articulo.getNombre();
+                            double precio = articulo.getPrecio();
+                            String precioFormateado = dosDecimales.format(precio);
+                            int stock = articulo.getCantidad();
+                        }
+                    }
+
+                    for (int i = 0; i < StockArticulosPrueba.inventario.size(); i++) {
+                        // objeto.getStock
+                        inventario.getNombre().add(producto);
+                    }
+
+                JPanel infoArticulos = new JPanel(new GridLayout(0, 2));
+
+                infoArticulos.add(new JLabel("Nombre del producto: "));
+                JComboBox<String> seleccionable = crearSeleccionable(StockArticulosPrueba.inventario.get(0));
+                infoArticulos.add(seleccionable);
+
+                infoArticulos.add(new JLabel("Cantidad:"));
+                JTextField cantidadTxt = new JTextField(10);
+                infoArticulos.add(cantidadTxt);
+
+                
+                panelCrearTicket(arrayProductos, productoStock, productoPrecio, dosDecimales);
+
+                actualizarProductos(frame, productoStock, productoPrecio, productos, productosTXT);
+            }
+        });
+    }
+
+    public static JComboBox<String> crearSeleccionable(ArrayList<String> arrayProductos) {
+        String[] productos = new String[(arrayProductos.size() + 1)];
+        productos[0] = "- Seleccionar producto -";
+        int i = 1;
+        for (String producto : arrayProductos) {
+            productos[i] = producto;
+            i++;
+        }
+        JComboBox<String> seleccionable = new JComboBox<>(productos);
+
+        return seleccionable;
+    }
+
+    public static void accionesAnadir(JFrame frame, JButton anadir, JPanel productos, StringBuilder productosTXT) {
         anadir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Hacerlo de otra manera que no preguntando la cantidad que vas a añadir.
-                int cant = Integer.parseInt(JOptionPane.showInputDialog("Cantidad articulos"));
-                for (int i = 1; i <= cant; i++) {
-                    // articulos1.agregarArticulo();
-                    StockArticulosPrueba.agregarArticulo();
+                JPanel cantidad = new JPanel(new GridLayout(0, 2));
+
+                cantidad.add(new JLabel("Cantidad del producto: "));
+                JTextField cantidadTxt = new JTextField(10);
+                cantidad.add(cantidadTxt);
+
+                int opcion = JOptionPane.showConfirmDialog(null, cantidad, "Ingrese la cantidad", JOptionPane.OK_CANCEL_OPTION);
+
+                boolean error = false;
+                int qty = 0;
+                try {
+                    qty = Integer.parseInt(cantidadTxt.getText());
+                    error = false;
+                } catch (Exception et) {
+                    error = true; 
+                }  
+
+                if (opcion == JOptionPane.CANCEL_OPTION || opcion == JOptionPane.CLOSED_OPTION || error) {
+                    JOptionPane.showMessageDialog(null, "No se ha introducido una cantidad válida", "ERROR 404", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    for (int i = 1; i <= qty; i++) {
+                        StockArticulosPrueba.agregarArticulo();
+                    }
+                    actualizarProductos(frame, productos, productosTXT);
                 }
-                actualizarProductos(frame, productos, productosTXT);
             }
         });
     }

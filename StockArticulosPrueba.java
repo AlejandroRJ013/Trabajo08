@@ -47,7 +47,7 @@ public class StockArticulosPrueba {
     }
 
     public String toString() {
-        return "  -  Empleado:\n\t{" +
+        return "  -  Productos:\n\t{" +
                 " Artículo='" + nombre + '\'' +
                 ", Precio='" + precioBruto + '\'' +
                 ", Cantidad=" + cantidad + '\'' +
@@ -74,8 +74,12 @@ public class StockArticulosPrueba {
         JCheckBox articuloEsencialCheck = new JCheckBox();
         infoArticulos.add(articuloEsencialCheck);
 
-        JOptionPane.showConfirmDialog(null, infoArticulos, "Titulo", JOptionPane.OK_CANCEL_OPTION);
+        int opcion = JOptionPane.showConfirmDialog(null, infoArticulos, "Titulo", JOptionPane.OK_CANCEL_OPTION);
 
+        if (opcion == JOptionPane.CANCEL_OPTION || opcion == JOptionPane.CLOSED_OPTION) {
+            JOptionPane.showMessageDialog(null, "Agregar artículo cancelado correctamente", "ERROR 404", JOptionPane.ERROR_MESSAGE);
+        } else {
+            
         boolean esencial = articuloEsencialCheck.isSelected() ? true : false;
         String producto = "";
         double precio = 0.0;
@@ -85,45 +89,45 @@ public class StockArticulosPrueba {
         Policias poliPrecio = new Policias(precioTxt, "decimales");
         Policias poliCantidad = new Policias(cantidadTxt, "enteros");
 
-        if (poliProducto.getBoolean()) {
-            producto = productoTxt.getText();
+            if (poliProducto.getBoolean()) {
+                producto = productoTxt.getText().toUpperCase();
 
-            if (poliPrecio.getBoolean()) {
-                precio = Double.parseDouble(precioTxt.getText());
+                if (poliPrecio.getBoolean()) {
+                    precio = Double.parseDouble(precioTxt.getText());
 
-                if (poliCantidad.getBoolean()) {
-                    cantidad = Integer.parseInt(cantidadTxt.getText());
+                    if (poliCantidad.getBoolean()) {
+                        cantidad = Integer.parseInt(cantidadTxt.getText());
+
+                        StockArticulosPrueba articulos = new StockArticulosPrueba(producto, precio, esencial, cantidad);
+                        inventario.add(articulos);
+
+                        if (inventario.size() >= 10) {
+                            JOptionPane.showMessageDialog(null, "¡El inventario contiene 10 o más productos!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                        }
+
+                        if (!poliProducto.getBoolean() || !poliPrecio.getBoolean() || !poliCantidad.getBoolean()) {
+                            JOptionPane.showMessageDialog(null, "El artículo no se ha podido agregar", "Mensaje", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "¡Artículo agregado correctamente!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                        }
+
+                        System.out.println(producto);
+                        System.out.println(precio);
+                        System.out.println(cantidad);
+                        System.out.println(esencial);
+                        System.out.println(articulos.toString()+"\n");
+                        for (int i = 0; i < inventario.size(); i++) {
+                            System.out.println(inventario.get(i));
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Cantidad del producto debe ser un número entero y superior a 0.", "Error 404", JOptionPane.ERROR_MESSAGE);
+                    }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Cantidad del producto debe ser un número entero y superior a 0.", "Error 404", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "El precio del producto deben ser números decimales y superior a 0.", "Error 404", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "El precio del producto deben ser números decimales y superior a 0.", "Error 404", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "El nombre del producto solo puede tener letras.", "Error 404", JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "El nombre del producto solo puede tener letras.", "Error 404", JOptionPane.ERROR_MESSAGE);
-        }
-
-
-        StockArticulosPrueba articulos = new StockArticulosPrueba(producto, precio, esencial, cantidad);
-        inventario.add(articulos);
-
-        if (inventario.size() >= 10) {
-            JOptionPane.showMessageDialog(null, "¡El inventario contiene 10 o más productos!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
-        }
-
-        if (!poliProducto.getBoolean() || !poliPrecio.getBoolean() || !poliCantidad.getBoolean()) {
-            JOptionPane.showMessageDialog(null, "El artículo no se ha podido agregar", "Mensaje", JOptionPane.ERROR_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null, "¡Artículo agregado correctamente!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
-        }
-
-        System.out.println(producto);
-        System.out.println(precio);
-        System.out.println(cantidad);
-        System.out.println(esencial);
-        System.out.println(articulos.toString()+"\n");
-        for (int i = 0; i < inventario.size(); i++) {
-            System.out.println(inventario.get(i));
         }
     }
 }
