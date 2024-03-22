@@ -235,7 +235,7 @@ public class StockArticulos {
 
  // Va pidiendo los artículos conforme pasan por caja
     public static void comprarArticulos(Scanner sc, HashMap<String, Double[]> compra) {
-        double totalDeArticulos = 0;
+        // double totalDeArticulos = 0;
         do {
             System.out.println("Ingrese el nombre del artículo:");
             String nombreProductoComprado = sc.nextLine();
@@ -257,7 +257,7 @@ public class StockArticulos {
                 // Agregar el artículo a la compra
                 double precioConIVA = calcularPrecioConIVA(articulo.precioBruto, articulo.IVA);
                 compra.put(nombreProductoComprado, new Double[]{articulo.precioBruto, precioConIVA, articulo.IVA, (double) cantidad});
-                totalDeArticulos++;
+                // totalDeArticulos++;
                 // Restar la cantidad comprada del inventario
                 articulo.cantidad -= cantidad;
             } else {

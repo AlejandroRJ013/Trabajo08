@@ -5,7 +5,6 @@ import java.util.Scanner;
 public class ejercicio4und7 {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
 //		double precioProductoNeto;
 		double sumaCompra = 0;
