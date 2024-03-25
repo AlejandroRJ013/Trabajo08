@@ -10,7 +10,6 @@ public class StockArticulosPrueba {
     private double IVA;
     private final double IVAesencial = 1.04;
     private final double IVAnormal = 1.21;
-    private boolean masArticulos = false;
 
     // Lista para almacenar los productos
     public static ArrayList<StockArticulosPrueba> inventario = new ArrayList<>();
@@ -47,6 +46,14 @@ public class StockArticulosPrueba {
         return cantidad;
     }
 
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    public double getIVA() {
+        return IVA;
+    }
+
     public String toString() {
         return "  -  Productos:\n\t{" +
                 " Artículo='" + nombre + '\'' +
@@ -57,22 +64,33 @@ public class StockArticulosPrueba {
     }
 
 
-    public static void comprarArticulo(HashMap<String, Integer> cesta, int respuesta) {
-        
-    }
-
-    public static JComboBox<String> crearSeleccionable(ArrayList<StockArticulosPrueba> inventario) {
-        String[] productos = new String[(inventario.size() + 1)];
-        productos[0] = "- Seleccionar producto -";
-
-        for (int i = 0; i < StockArticulosPrueba.inventario.size(); i++) {
-            StockArticulosPrueba articulo = StockArticulosPrueba.inventario.get(i);
-            String producto = articulo.getNombre();
-            productos[(i+1)] = producto;
+    public static String crearTicket(HashMap<String, Integer> cesta, StringBuilder ticket) {
+        double totalProducto = 0;
+        int i = 0;
+        double totalCompra = 0;
+        for (String nomProducto : cesta.keySet()) {
+            for (StockArticulosPrueba producto : StockArticulosPrueba.inventario) {
+                String nombreProducto = producto.getNombre();
+                if (nomProducto.equals(nombreProducto)) {
+                    int qty = producto.getCantidad();
+                    if (cesta.get(nombreProducto) > qty) {
+                        JOptionPane.showMessageDialog(null, "El stock del producto es de " + qty + " y usted esta intentando comprar " + cesta.get(nombreProducto), "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        double precio = producto.getPrecio();
+                        double iva = producto.getIVA();
+                        double precioIva = precio * iva;
+                        totalProducto = precioIva * cesta.get(nombreProducto);
+                        System.out.println(totalProducto);
+                        ticket.append("EL producto \""+nombreProducto+"\":\n\tPrecio: "+precio+"\nCon IVA: "+ precioIva + "\nTotal producto: " + totalCompra + "\n");
+                    }
+                }
+                totalCompra +=totalProducto;
+                System.out.println(totalCompra);
+                i++;
+            }
         }
-        JComboBox<String> seleccionable = new JComboBox<>(productos);
-
-        return seleccionable;
+        ticket.append("\nEl total de la compra será: " + totalCompra);
+        return ticket.toString();
     }
 
     public static void agregarArticulo() {

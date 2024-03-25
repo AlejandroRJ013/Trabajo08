@@ -13,8 +13,8 @@ public class mainPrueba {
             StockArticulosPrueba.inventario.add(leche);
         StockArticulosPrueba pan = new StockArticulosPrueba("PAN", 0.90, true, 30);
             StockArticulosPrueba.inventario.add(pan);
-        // StockArticulosPrueba huevos = new StockArticulosPrueba("HUEVOS", 2.50, true, 40);
-        //     StockArticulosPrueba.inventario.add(huevos);
+        StockArticulosPrueba huevos = new StockArticulosPrueba("HUEVOS", 2.50, true, 40);
+            StockArticulosPrueba.inventario.add(huevos);
         // StockArticulosPrueba arroz = new StockArticulosPrueba("ARROZ", 1.30, false, 15);
         //     StockArticulosPrueba.inventario.add(arroz);
         // StockArticulosPrueba pasta = new StockArticulosPrueba("PASTA", 1.25, false, 25);
@@ -69,7 +69,7 @@ public class mainPrueba {
 
     public static void panelTitulo(JPanel tituloLIDL) {
         tituloLIDL.setBackground(Color.BLUE);
-        JLabel titulArticulos = new JLabel("LIDL");
+        JLabel titulArticulos = new JLabel("L I D L");
         titulArticulos.setFont(new Font("Arial", Font.BOLD, 70));
         titulArticulos.setForeground(Color.YELLOW);
         titulArticulos.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -90,7 +90,7 @@ public class mainPrueba {
             int stock = articulo.getCantidad();
 
             JLabel labelProductos = new JLabel(
-                    "Artículo " + (i+1) + " >  " + producto + ": " + precioFormateado + "€ / " + stock
+                    "Articulo " + (i+1) + " >  " + producto + ": " + precioFormateado + "€ / " + stock
                             + " unidades en stock");
             labelProductos.setForeground(Color.BLACK);
             productosTXT.append(
@@ -142,8 +142,8 @@ public class mainPrueba {
 
         comprar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                StringBuilder ticket = new StringBuilder("TICKET LIDL\n\n");
                 int qty = 0;
-                boolean error = false;
                 
                 UIManager.put("OptionPane.yesButtonText", "Sí");
                 UIManager.put("OptionPane.noButtonText", "No");
@@ -153,16 +153,20 @@ public class mainPrueba {
                 if (respuesta == JOptionPane.CANCEL_OPTION || respuesta == JOptionPane.CLOSED_OPTION) {
                     JOptionPane.showMessageDialog(null, "Operación cancelada", "Error 404", JOptionPane.ERROR_MESSAGE);
                 } else if (respuesta == JOptionPane.NO_OPTION) {
-                    panelesGenerativos();
+                    panelesGenerativos(ticket);
+
+
                 } else if (respuesta == JOptionPane.YES_OPTION) {
                     int i = 1;
-                    qty = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese la cantidad de artículos a comprar", "Comprar varios artículos", JOptionPane.QUESTION_MESSAGE));
+                    qty = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese la cantidad de articulos a comprar", "Comprar varios articulos", JOptionPane.QUESTION_MESSAGE));
                     while (i <= qty) {
-                    // StockArticulosPrueba.comprarArticulo(cesta, respuesta, masArticulos);
                     System.out.println(cesta);
                     i++;
                     }
                 }
+
+                String ticketMostrar = StockArticulosPrueba.crearTicket(cesta, ticket);
+                JOptionPane.showMessageDialog(null, ticketMostrar, "Ticket", JOptionPane.INFORMATION_MESSAGE);
 
                 // panelCrearTicket(arrayProductos, dosDecimales);
 
@@ -170,6 +174,33 @@ public class mainPrueba {
             }
         });
     }
+
+    // public static StringBuilder crearTicket(HashMap<String, Integer> cesta, StringBuilder ticket) {
+    //     int i = 0;
+    //     double totalCompra = 0;
+    //     double totalProducto = 0;
+    //     for (String nomProducto : cesta.keySet()) {
+    //         for (StockArticulosPrueba producto : StockArticulosPrueba.inventario) {
+    //             String nombreProducto = producto.getNombre();
+    //             if (nomProducto.equals(nombreProducto)) {
+    //                 int qty = producto.getCantidad();
+    //                 if (cesta.get(nombreProducto) > qty) {
+    //                     JOptionPane.showMessageDialog(null, "El stock del producto es de " + qty + " y usted esta intentando comprar " + cesta.get(nombreProducto), "Error", JOptionPane.ERROR_MESSAGE);
+    //                 } else {
+    //                     double precio = producto.getPrecio();
+    //                     double iva = producto.getIVA();
+    //                     double precioIva = precio * iva;
+    //                     totalProducto = precioIva * cesta.get(nombreProducto);
+    //                     ticket.append("EL producto \""+nombreProducto+"\":\n\tPrecio: "+precio+"\nCon IVA: "+ precioIva + "\nTotal producto: " + totalCompra + "\n");
+    //                 }
+    //             }
+    //             totalCompra +=totalProducto;
+    //             i++;
+    //         }
+    //     }
+    //     ticket.append("\nEl total de la compra será: " + totalCompra);
+    //     return ticket;
+    // }
 
     // public static void panelCrearTicket(ArrayList<String> arrayProductos, DecimalFormat dosDecimales) {
     //     StringBuilder texto = new StringBuilder("PRECIO DE LOS ARTICULOS\n");
@@ -222,8 +253,8 @@ public class mainPrueba {
 
     //         if (arrayProductos.size() < 2) {
     //             masArticulos = false;
-    //             JOptionPane.showMessageDialog(null, "No hay mas artículos para poder comprar, finalice la compra",
-    //                     "Artículos máximos", JOptionPane.INFORMATION_MESSAGE);
+    //             JOptionPane.showMessageDialog(null, "No hay mas Articulos para poder comprar, finalice la compra",
+    //                     "Articulos máximos", JOptionPane.INFORMATION_MESSAGE);
     //             break;
     //         }
 
@@ -233,64 +264,110 @@ public class mainPrueba {
     //     ticket(dosDecimales, texto, totalCompra);
     // }
 
-    public static void panelesGenerativos() {
-    DecimalFormat dosDecimales = new DecimalFormat("0.00");
-    ArrayList<String> nombreProductos = new ArrayList<>();
-    HashMap<String, Integer> cesta = new HashMap<>();
-    boolean error = false;
+    public static void panelesGenerativos(StringBuilder ticket) {
+        DecimalFormat dosDecimales = new DecimalFormat("0.00");
+        ArrayList<String> nombreProductos = new ArrayList<>();
+        HashMap<String, Integer> cesta = new HashMap<>();
+        boolean error = false;
 
-    for (StockArticulosPrueba producto : StockArticulosPrueba.inventario) {
-        nombreProductos.add(producto.getNombre());
-    }
-    System.out.println(nombreProductos.size());
-    while (!error) {
-        boolean masArticulos = true;
-        if (nombreProductos.size() == 2) {
-            JOptionPane.showMessageDialog(null, "Has seleccionado toda la variedad de productos que tenemos. Finalice la compra por favor.", "Máximo de productos", JOptionPane.WARNING_MESSAGE);
-            error = true;
+        for (StockArticulosPrueba producto : StockArticulosPrueba.inventario) {
+            nombreProductos.add(producto.getNombre());
         }
-        JPanel panelComprar = new JPanel(new GridLayout(0, 2));
+        while (!error) {
+            boolean masArticulos = false;
+            if (nombreProductos.size() < 1) {
+                JOptionPane.showMessageDialog(null, "¡ ¡ ÚLTIMO ARTÍCULO ! !", "Máximo de productos", JOptionPane.WARNING_MESSAGE);
+                break;
+            }
+            JPanel panelComprar = new JPanel(new GridLayout(0, 2));
 
-        panelComprar.add(new JLabel("Nombre del producto: "));
-        JComboBox<String> seleccionable = crearSeleccionable(nombreProductos);
-        panelComprar.add(seleccionable);
+            panelComprar.add(new JLabel("Nombre del producto: "));
+            JComboBox<String> seleccionable = crearSeleccionable(nombreProductos);
+            panelComprar.add(seleccionable);
 
-        panelComprar.add(new JLabel("Cantidad:"));
-        JTextField cantidadTxt = new JTextField(10);
-        panelComprar.add(cantidadTxt);
+            JLabel textoPrecioPanel = new JLabel("Precio / PrecioIva:");
+            JLabel precioPanel = new JLabel("0.0 / 0.0");
+            
+            // Hacer que muestre el precio del artículo seleccionado según se selecciona
+            mostrarPrecio(dosDecimales, seleccionable, precioPanel, ticket);
 
-        panelComprar.add(new JLabel("¿Más articulos?"));
-        JCheckBox masArticulosCheck = new JCheckBox();
-        panelComprar.add(masArticulosCheck);
+            panelComprar.add(textoPrecioPanel);
+            panelComprar.add(precioPanel);
 
-        int confirmacion = JOptionPane.showConfirmDialog(null, panelComprar, "Cesta Lidl", JOptionPane.OK_CANCEL_OPTION);
-        masArticulos = masArticulosCheck.isSelected();
-        if (!masArticulos) {
-            error = true;
-        }
+            panelComprar.add(new JLabel("Cantidad:"));
+            JTextField cantidadTxt = new JTextField(10);
+            panelComprar.add(cantidadTxt);
 
-        if (confirmacion == JOptionPane.CANCEL_OPTION || confirmacion == JOptionPane.CLOSED_OPTION) {
-            JOptionPane.showMessageDialog(null, "Operación cancelada", "Error 404", JOptionPane.ERROR_MESSAGE);
-        } else {
-            String producto = (String) seleccionable.getSelectedItem();
-            if (producto != null && !producto.equals("- Seleccionar producto -")) {
-                Policias poliCantidad = new Policias(cantidadTxt, "enteros");
-                if (poliCantidad.getBoolean()) {
-                    int cantidad = Integer.parseInt(cantidadTxt.getText());
-                    nombreProductos.remove(producto);
+            panelComprar.add(new JLabel("¿Más articulos?"));
+            JCheckBox masArticulosCheck = new JCheckBox();
+            panelComprar.add(masArticulosCheck);
 
-                    //llamar método
-                    cesta.put(producto, cantidad);
-                } else {
-                    JOptionPane.showMessageDialog(null, "La cantidad debe ser un número entero válido.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
+            int confirmacion = JOptionPane.showConfirmDialog(null, panelComprar, "Cesta Lidl", JOptionPane.OK_CANCEL_OPTION);
+            masArticulos = masArticulosCheck.isSelected();
+            if (!masArticulos) {
+                error = true;
+            }
+
+            if (confirmacion == JOptionPane.CANCEL_OPTION || confirmacion == JOptionPane.CLOSED_OPTION) {
+                JOptionPane.showMessageDialog(null, "Operación cancelada", "Error 404", JOptionPane.ERROR_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(null, "Por favor, seleccione un producto válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                String productoStr = (String) seleccionable.getSelectedItem();
+                if (productoStr != null && !productoStr.equals("- Seleccionar producto -")) {
+                    Policias poliCantidad = new Policias(cantidadTxt, "enteros");
+                    if (poliCantidad.getBoolean()) {
+                        int cantidad = Integer.parseInt(cantidadTxt.getText());
+                        int stockProducto = 0;
+                        for (StockArticulosPrueba producto : StockArticulosPrueba.inventario) {
+                            String objetoProducto = producto.getNombre();
+                            if (productoStr.equals(objetoProducto)) {
+                                stockProducto = producto.getCantidad();
+                                if (cantidad > stockProducto) {
+                                    JOptionPane.showMessageDialog(null, "El stock del producto es de " + stockProducto
+                                    + " y usted esta intentando comprar " + cantidad, "Error 404", JOptionPane.ERROR_MESSAGE);
+                                } else {
+                                    stockProducto -= cantidad;
+                                    producto.setCantidad(stockProducto);
+                                }
+                            }
+                        }
+                        
+                    
+                        nombreProductos.remove(productoStr);
+                        cesta.put(productoStr, cantidad);
+
+                        ticket.append("\n    Cantidad comprada: "+ cantidad+"\n\n");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "La cantidad debe ser un número entero válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Por favor, seleccione un producto válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }
-}
 
+    public static void mostrarPrecio(DecimalFormat dosDecimales, JComboBox<String> seleccionable, JLabel precioPanel, StringBuilder ticket) {
+        seleccionable.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String nombreProducto = (String) seleccionable.getSelectedItem();
+                for (StockArticulosPrueba producto : StockArticulosPrueba.inventario) {
+                    String objetoProducto = producto.getNombre();
+                    String precioConIva = "";
+                    if (nombreProducto.equals(objetoProducto)) {
+                        double precio = producto.getPrecio();
+                        String precioFormateado = dosDecimales.format(precio);
+                        double iva = producto.getIVA();
+                        precioConIva = dosDecimales.format(precio * iva);
+                        precioPanel.setText(precioFormateado + " / "+precioConIva);
+                        ticket.append("Artículo \""+nombreProducto+"\"\n    Precio IVA: "+ precioConIva);
+                    } else if (nombreProducto.equals("- Seleccionar producto -")) {
+                        precioPanel.setText("0.0 / 0.0");
+                        ticket.append("Artículo \""+nombreProducto+"\"\n    Precio IVA: "+ precioConIva);
+                    }
+                }
+            }
+        });
+    }
 
     public static void ticket(DecimalFormat dosDecimales, StringBuilder texto, double totalCompra) {
         String laMulta = dosDecimales.format(totalCompra);
@@ -364,7 +441,7 @@ public class mainPrueba {
 
 
                     JLabel labelProductos = new JLabel(
-                            "Artículo " + (i+1) + " >  " + producto + ": " + precioFormateado + "€ / " + stock
+                            "Articulo " + (i+1) + " >  " + producto + ": " + precioFormateado + "€ / " + stock
                                     + " unidades en stock");
                     labelProductos.setForeground(Color.BLACK);
                     productosTXT.append(
@@ -373,7 +450,7 @@ public class mainPrueba {
                     productos.add(labelProductos);
                     productos.add(Box.createVerticalStrut(5));
                 } else {
-                    JOptionPane.showMessageDialog(null, "Has llegado al máximo de artículos posible");
+                    JOptionPane.showMessageDialog(null, "Has llegado al máximo de Articulos posible");
                 }
             }
             productos.revalidate();
