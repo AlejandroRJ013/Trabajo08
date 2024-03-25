@@ -7,7 +7,7 @@ import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.border.*;
 
-public class mainPrueba {
+public class mainProbeta {
     public static void main(String[] args) {
         StockArticulosPrueba leche = new StockArticulosPrueba("LECHE", 1.10, true, 20);
             StockArticulosPrueba.inventario.add(leche);

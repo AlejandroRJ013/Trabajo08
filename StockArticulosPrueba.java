@@ -10,6 +10,7 @@ public class StockArticulosPrueba {
     private double IVA;
     private final double IVAesencial = 1.04;
     private final double IVAnormal = 1.21;
+    private boolean masArticulos = false;
 
     // Lista para almacenar los productos
     public static ArrayList<StockArticulosPrueba> inventario = new ArrayList<>();
@@ -56,35 +57,8 @@ public class StockArticulosPrueba {
     }
 
 
-    public static void comprarArticulo(HashMap<String, Integer> cesta) {
-        JPanel panelComprar = new JPanel(new GridLayout(0, 2));
-
-        panelComprar.add(new JLabel("Nombre del producto: "));
-        JComboBox<String> seleccionable = crearSeleccionable(inventario);
-        panelComprar.add(seleccionable);
-
-        panelComprar.add(new JLabel("Cantidad:"));
-        JTextField cantidadTxt = new JTextField(10);
-        panelComprar.add(cantidadTxt);
-
-        int confirmacion = JOptionPane.showConfirmDialog(null, panelComprar, "Cesta Lidl", JOptionPane.OK_CANCEL_OPTION);
+    public static void comprarArticulo(HashMap<String, Integer> cesta, int respuesta) {
         
-        if (confirmacion == JOptionPane.CANCEL_OPTION || confirmacion == JOptionPane.CLOSED_OPTION) {
-            JOptionPane.showMessageDialog(null, "Operación cancelada", "Error 404", JOptionPane.ERROR_MESSAGE);
-        } else {
-            String producto = (String) seleccionable.getSelectedItem();
-            if (producto != null && !producto.equals("- Seleccionar producto -")) {
-                Policias poliCantidad = new Policias(cantidadTxt, "enteros");
-                if (poliCantidad.getBoolean()) {
-                    int cantidad = Integer.parseInt(cantidadTxt.getText());
-                    cesta.put(producto, cantidad);
-                } else {
-                    JOptionPane.showMessageDialog(null, "La cantidad debe ser un número entero válido.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "Por favor, seleccione un producto válido.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
     }
 
     public static JComboBox<String> crearSeleccionable(ArrayList<StockArticulosPrueba> inventario) {
