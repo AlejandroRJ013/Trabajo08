@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.*;
 import javax.swing.*;
 
@@ -63,33 +64,32 @@ public class StockArticulosPrueba {
                 '}';
     }
 
-
-    public static String crearTicket(HashMap<String, Integer> cesta, StringBuilder ticket) {
-        double totalProducto = 0;
-        int i = 0;
-        double totalCompra = 0;
-        for (String nomProducto : cesta.keySet()) {
-            for (StockArticulosPrueba producto : StockArticulosPrueba.inventario) {
-                String nombreProducto = producto.getNombre();
-                if (nomProducto.equals(nombreProducto)) {
-                    int qty = producto.getCantidad();
-                    if (cesta.get(nombreProducto) > qty) {
-                        JOptionPane.showMessageDialog(null, "El stock del producto es de " + qty + " y usted esta intentando comprar " + cesta.get(nombreProducto), "Error", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        double precio = producto.getPrecio();
-                        double iva = producto.getIVA();
-                        double precioIva = precio * iva;
-                        totalProducto = precioIva * cesta.get(nombreProducto);
-                        System.out.println(totalProducto);
-                        ticket.append("EL producto \""+nombreProducto+"\":\n\tPrecio: "+precio+"\nCon IVA: "+ precioIva + "\nTotal producto: " + totalCompra + "\n");
-                    }
-                }
-                totalCompra +=totalProducto;
-                System.out.println(totalCompra);
-                i++;
+    public static StockArticulosPrueba buscar(String nombreProducto) {
+        StockArticulosPrueba esteEs = new StockArticulosPrueba();
+        for (StockArticulosPrueba producto : StockArticulosPrueba.inventario) {
+            String objetoProducto = producto.getNombre();
+            if (nombreProducto.equals(objetoProducto)) {
+                esteEs = producto;
+                break;
             }
         }
-        ticket.append("\nEl total de la compra será: " + totalCompra);
+        return esteEs;
+    }
+
+    public static String crearTicket(HashMap<String, Integer> cesta, DecimalFormat dosDecimales, StringBuilder ticket, ArrayList<Double> precios) {
+        double totalProducto = 0;
+        double totalCompra = 0;
+        int i = 0;
+        for (String nomProducto : cesta.keySet()) {
+            totalProducto = precios.get(i) * cesta.get(nomProducto);
+            System.out.println(totalProducto);
+
+            totalCompra +=totalProducto;
+            System.out.println(totalCompra);
+        }
+        String totalCompraFormateado = dosDecimales.format(totalCompra);
+        ticket.append("\nEl total de la compra será: " + totalCompraFormateado);
+        i++;
         return ticket.toString();
     }
 
@@ -134,17 +134,18 @@ public class StockArticulosPrueba {
                     precio = Double.parseDouble(precioTxt.getText());
 
                     if (poliCantidad.getBoolean()) {
-                        cantidad = Integer.parseInt(cantidadTxt.getText());
 
-                        StockArticulosPrueba articulos = new StockArticulosPrueba(producto, precio, esencial, cantidad);
-                        inventario.add(articulos);
-
-                        if (inventario.size() >= 10) {
-                            JOptionPane.showMessageDialog(null, "¡El inventario contiene 10 o más productos!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                        if (inventario.size() >= 20) {
+                            JOptionPane.showMessageDialog(null, "¡El inventario contiene 20 o más productos!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             if (!poliProducto.getBoolean() || !poliPrecio.getBoolean() || !poliCantidad.getBoolean()) {
                                 JOptionPane.showMessageDialog(null, "El artículo no se ha podido agregar", "Mensaje", JOptionPane.ERROR_MESSAGE);
                             } else {
+                                cantidad = Integer.parseInt(cantidadTxt.getText());
+
+                                StockArticulosPrueba articulos = new StockArticulosPrueba(producto, precio, esencial, cantidad);
+                                inventario.add(articulos);
+                                
                                 System.out.println(producto);
                                 System.out.println(precio);
                                 System.out.println(cantidad);
