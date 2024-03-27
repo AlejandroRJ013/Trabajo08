@@ -12,7 +12,7 @@ public class mainPrueba {
         StockArticulosPrueba leche = new StockArticulosPrueba("LECHE", 1.20, true, 170);
         StockArticulosPrueba.inventario.add(leche);
 
-        StockArticulosPrueba pan = new StockArticulosPrueba("PAN", 0.80, true, 150);
+        StockArticulosPrueba pan = new StockArticulosPrueba("PAN", 0.80, false, 150);
         StockArticulosPrueba.inventario.add(pan);
 
         StockArticulosPrueba huevos = new StockArticulosPrueba("HUEVOS", 1.80, true, 210);
@@ -21,13 +21,13 @@ public class mainPrueba {
         StockArticulosPrueba arroz = new StockArticulosPrueba("ARROZ", 1.50, false, 200);
         StockArticulosPrueba.inventario.add(arroz);
 
-        StockArticulosPrueba pasta = new StockArticulosPrueba("PASTA", 1.40, false, 190);
+        StockArticulosPrueba pasta = new StockArticulosPrueba("PASTA", 1.40, true, 190);
         StockArticulosPrueba.inventario.add(pasta);
 
         StockArticulosPrueba tomates = new StockArticulosPrueba("TOMATES", 2.20, false, 180);
         StockArticulosPrueba.inventario.add(tomates);
 
-        StockArticulosPrueba patatas = new StockArticulosPrueba("PATATAS", 2.00, false, 220);
+        StockArticulosPrueba patatas = new StockArticulosPrueba("PATATAS", 2.00, true, 220);
         StockArticulosPrueba.inventario.add(patatas);
 
         StockArticulosPrueba manzanas = new StockArticulosPrueba("MANZANAS", 1.60, false, 200);
@@ -36,7 +36,7 @@ public class mainPrueba {
         StockArticulosPrueba pollo = new StockArticulosPrueba("POLLO", 4.50, true, 190);
         StockArticulosPrueba.inventario.add(pollo);
 
-        StockArticulosPrueba queso = new StockArticulosPrueba("QUESO", 3.20, true, 200);
+        StockArticulosPrueba queso = new StockArticulosPrueba("QUESO", 3.20, false, 200);
         StockArticulosPrueba.inventario.add(queso);
 
         // PRUEBA PARA NO AÑADIR MÁS DE 20
@@ -113,7 +113,7 @@ public class mainPrueba {
 
     public static void panelTitulo(JPanel tituloLIDL) {
         tituloLIDL.setBackground(Color.BLUE);
-        JLabel titulArticulos = new JLabel("L  I  D  L");
+        JLabel titulArticulos = new JLabel("P H U B");
         titulArticulos.setFont(new Font("Arial", Font.BOLD, 55));
         titulArticulos.setForeground(Color.YELLOW);
         titulArticulos.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -223,9 +223,13 @@ public class mainPrueba {
         });
     }
 
+    //el ultimo no se agrega bien
+    
     public static void panelesGenerativos(DecimalFormat dosDecimales, StringBuilder ticket, ArrayList<String> arrayProductos, HashMap<String, Integer> cesta, ArrayList<Double> precios) {
         boolean error = false;
         boolean masArticulos = true;
+        String productoStr = "";
+        int cantidad = 0;
 
         for (StockArticulosPrueba producto : StockArticulosPrueba.inventario) {
             arrayProductos.add(producto.getNombre());
@@ -262,16 +266,16 @@ public class mainPrueba {
 
             //  ERRORES
             masArticulos = masArticulosCheck.isSelected();
-            
+
             if (confirmacion == JOptionPane.CANCEL_OPTION || confirmacion == JOptionPane.CLOSED_OPTION) {
                 JOptionPane.showMessageDialog(null, "Operación cancelada", "Error 404", JOptionPane.ERROR_MESSAGE);
                 error = true;
             } else {
-                String productoStr = (String) seleccionable.getSelectedItem();
+                productoStr = (String) seleccionable.getSelectedItem();
                 if (productoStr != null && !productoStr.equals("- Seleccionar producto -")) {
                     Policias poliCantidad = new Policias(cantidadTxt, "enteros");
                     if (poliCantidad.getBoolean()) {
-                        int cantidad = Integer.parseInt(cantidadTxt.getText());
+                        cantidad = Integer.parseInt(cantidadTxt.getText());
                         int stockProducto = 0;
                         for (StockArticulosPrueba producto : StockArticulosPrueba.inventario) {
                             String objetoProducto = producto.getNombre();
@@ -286,7 +290,6 @@ public class mainPrueba {
                                     stockProducto -= cantidad;
                                     producto.setCantidad(stockProducto);
                                     arrayProductos.remove(productoStr);
-                                    cesta.put(productoStr, cantidad);
 
                                     ticket.append("Artículo: \""+productoStr+"\"\n    Cantidad comprada: "+ cantidad);
                                     precio_precioCantidad(ticket, dosDecimales, productoStr, cantidad);
@@ -305,6 +308,7 @@ public class mainPrueba {
             }
         }
         if (!error) {
+            cesta.put(productoStr, cantidad);
             String ticketMostrar = StockArticulosPrueba.crearTicket(cesta, dosDecimales, ticket, precios);
             JOptionPane.showMessageDialog(null, ticketMostrar, "Ticket", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -313,8 +317,10 @@ public class mainPrueba {
     public static void precio_precioCantidad(StringBuilder ticket, DecimalFormat dosDecimales, String productoStr, int cantidad) {
         StockArticulosPrueba articulo = buscar(productoStr);
         double precio = articulo.getPrecio();
-        double precioCantidad = precio * cantidad;
-        ticket.append("\n    Precio  /* Cantidad: "+ dosDecimales.format(precio) +"   / " + dosDecimales.format(precioCantidad)+"\n\n");
+        double iva = articulo.getIVA();
+        double precioIVA = precio * iva;
+        double precioCantidad = precioIVA * cantidad;
+        ticket.append("\n    PrecioIVA  /* Cantidad: "+ dosDecimales.format(precioIVA) +"   / " + dosDecimales.format(precioCantidad)+"\n\n");
     }
 
     public static void mostrarPrecio(DecimalFormat dosDecimales, JComboBox<String> seleccionable, JLabel precioPanel, ArrayList<Double> precios) {

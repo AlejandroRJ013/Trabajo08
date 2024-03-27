@@ -86,10 +86,11 @@ public class StockArticulosPrueba {
 
             totalCompra +=totalProducto;
             System.out.println(totalCompra);
+
+            i++;
         }
         String totalCompraFormateado = dosDecimales.format(totalCompra);
         ticket.append("\nEl total de la compra será: " + totalCompraFormateado);
-        i++;
         return ticket.toString();
     }
 
@@ -145,15 +146,6 @@ public class StockArticulosPrueba {
 
                                 StockArticulosPrueba articulos = new StockArticulosPrueba(producto, precio, esencial, cantidad);
                                 inventario.add(articulos);
-                                
-                                System.out.println(producto);
-                                System.out.println(precio);
-                                System.out.println(cantidad);
-                                System.out.println(esencial);
-                                System.out.println(articulos.toString()+"\n");
-                                for (int i = 0; i < inventario.size(); i++) {
-                                    System.out.println(inventario.get(i));
-                                }
 
                                 JOptionPane.showMessageDialog(null, "¡Artículo agregado correctamente!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
                             }
